@@ -36,6 +36,42 @@ module.exports = function(app) {
                     }
                 });
             });
+            res.send('Scrape completed');
         });
     });
+
+    app.get('/articles', function(req, res) {
+        db.Article.find({}).then(function(articles) {
+            res.json(articles);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+    app.get('/articles/:id', function(req, res) {
+        db.Article.findOne({_id: req.params.id}).populate('comment').then(function(theArticle) {
+            res.json(theArticle);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+
+    app.post('/articles/:id', function(req, res) {
+        db.Comment.create(req.body).then(function(newComment) {
+            return db.Article.findOneAndUpdate(
+                {_id: req.params.id}, 
+                {
+                    '$push': {
+                        comment: newComment._id
+                    }
+                }, 
+                {new: true});
+        }).then(function(updatedArticle) {
+            res.json(updatedArticle);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
 };
