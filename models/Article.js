@@ -23,6 +23,10 @@ const ArticleSchema = new Schema({
         type: String,
         required: true
     },
+    saved: {
+        type: Boolean,
+        required: true
+    },
     comment: [{
         type: Schema.Types.ObjectId,
         ref: 'Comment'

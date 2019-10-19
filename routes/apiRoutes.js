@@ -4,6 +4,7 @@ const cheerio = require('cheerio');
 
 module.exports = function(app) {
 
+    // scrape for new articles
     app.get('/scrape', function(req, res) {
         axios.get('https://chicago.suntimes.com/entertainment-and-culture').then(function(response) {
             let $ = cheerio.load(response.data);
@@ -22,6 +23,7 @@ module.exports = function(app) {
                 articleResult.headline = headline;
                 articleResult.summary = summary;
                 articleResult.category = category;
+                articleResult.saved = false;
 
                 db.Article.findOne({headline: headline}).then(function(checkIfDup) {
                     if (checkIfDup) {
@@ -36,10 +38,11 @@ module.exports = function(app) {
                     }
                 });
             });
-            res.send('Scrape completed');
+            res.redirect('/articles');
         });
     });
 
+    // get all articles
     app.get('/articles', function(req, res) {
         db.Article.find({}).then(function(articles) {
             res.json(articles);
@@ -48,6 +51,7 @@ module.exports = function(app) {
         });
     });
 
+    // get a specific article/comments
     app.get('/articles/:id', function(req, res) {
         db.Article.findOne({_id: req.params.id}).populate('comment').then(function(theArticle) {
             res.json(theArticle);
@@ -56,7 +60,7 @@ module.exports = function(app) {
         });
     });
 
-
+    // comment on an article
     app.post('/articles/:id', function(req, res) {
         db.Comment.create(req.body).then(function(newComment) {
             return db.Article.findOneAndUpdate(
@@ -71,6 +75,53 @@ module.exports = function(app) {
             res.json(updatedArticle);
         }).catch(function(err) {
             res.json(err);
+        });
+    });
+
+    // save an article
+    app.put('/articles/:id/save', function(req, res) {
+        db.Article.findOneAndUpdate({_id: req.params.id}, {saved: true}, {new: true}).then(function(updated) {
+            res.json(updated);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+    // get saved articles
+    app.get('/saved', function(req, res) {
+        db.Article.find({saved: true}).then(function(articles) {
+            res.json(articles);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+    // delete an article
+    app.delete('/articles/:id/delete', function(req, res) {
+        db.Article.remove({_id: req.params.id}).then(function(articles) {
+            res.json(articles);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+    // delete a comment
+    app.delete('/articles/:id/deletecomment/:commid', function(req, res) {
+        db.Comment.remove({_id: req.params.commid}).then(function(comments) {
+            res.json(comments);
+        }).catch(function(err) {
+            res.json(err);
+        });
+    });
+
+    // delete all articles
+    app.delete('/articles', function(req, res) {
+        db.Article.remove({}).then(function(err) {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log('Articles deleted');
+            }
         });
     });
 
