@@ -116,12 +116,18 @@ module.exports = function(app) {
 
     // delete all articles
     app.delete('/articles', function(req, res) {
-        db.Article.remove({}).then(function(err) {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log('Articles deleted');
-            }
+        db.Article.remove({}).then(function(removed) {
+            res.redirect('/');
+        }).catch(function(err) {
+            res.json(err)
+        });
+    });
+
+    app.delete('/articles/saved', function(req, res) {
+        db.Article.remove({saved: true}).then(function(removed) {
+            res.redirect('/myarticles');
+        }).catch(function(err) {
+            res.json(err)
         });
     });
 
