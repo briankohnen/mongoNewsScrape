@@ -25,3 +25,16 @@
     </div>
     {{/each}}
 </section>
+
+<div id="commentModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>Comment on <span id="modalHeader"></span></p>
+    <form id='inputComment'>
+        <input id='body' type='text' placeholder='Type here . . .'></input>
+        <button id='sendComment'>Send</button>
+    </form>
+    <ul id='allComments' class='allComments'>
+    </ul>
+  </div>
+</div>

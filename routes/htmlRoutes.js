@@ -2,7 +2,7 @@ const db = require("../models");
 module.exports = function(app) {
 
     app.get('/', function(req, res) {
-        db.Article.find({}).then(function(articles) {
+        db.Article.find({saved: false}).then(function(articles) {
             res.render('index', {articles});
         }).catch(function(err) {
             res.json(err);

@@ -27,24 +27,24 @@ module.exports = function(app) {
 
                 db.Article.findOne({headline: headline}).then(function(checkIfDup) {
                     if (checkIfDup) {
-                        console.log('duplicate article');
                         return;
                     } else {
                         db.Article.create(articleResult).then(function(newArticle) {
-                            console.log(newArticle);
+                            console.log('scraping...');
                         }).catch(function(err) {
-                            console.log(err);
+                            res.json(err);
                         });
                     }
+                }).catch(function(err) {
+                    res.json(err);
                 });
             });
-            res.redirect('/articles');
         });
     });
 
     // get all articles
     app.get('/articles', function(req, res) {
-        db.Article.find({}).then(function(articles) {
+        db.Article.find({saved: false}).then(function(articles) {
             res.json(articles);
         }).catch(function(err) {
             res.json(err);
@@ -106,7 +106,7 @@ module.exports = function(app) {
     });
 
     // delete a comment
-    app.delete('/articles/:id/deletecomment/:commid', function(req, res) {
+    app.delete('/articles/deletecomment/:commid', function(req, res) {
         db.Comment.remove({_id: req.params.commid}).then(function(comments) {
             res.json(comments);
         }).catch(function(err) {
@@ -114,15 +114,16 @@ module.exports = function(app) {
         });
     });
 
-    // delete all articles
+    // delete unsaved articles
     app.delete('/articles', function(req, res) {
-        db.Article.remove({}).then(function(removed) {
+        db.Article.remove({saved: false}).then(function(removed) {
             res.redirect('/');
         }).catch(function(err) {
             res.json(err)
         });
     });
 
+    // delete all saved articles
     app.delete('/articles/saved', function(req, res) {
         db.Article.remove({saved: true}).then(function(removed) {
             res.redirect('/myarticles');
