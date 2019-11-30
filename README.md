@@ -23,6 +23,5 @@ The user has the option of several actions...
 * __npm packages__
   * _axios_ : used to grab information from the chicago sun time 'entertainment and culture' section -> https://chicago.suntimes.com/entertainment-and-culture
   * _cheerio_ : used to scrape/read/format data from the above web page
-  * _cli-table_ : used to present data in a tabular fashion inside bamazonSupervisor.js
   * _mongoose_ : used for CRUD operations involving database -> creating / reading / editing / deleting articles
   * _express-handlebars_ : front-end templating used to populate pages with data from mongoDB
