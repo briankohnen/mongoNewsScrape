@@ -5,7 +5,7 @@ Deployed Link here: https://infinite-everglades-67327.herokuapp.com/
 
 The user has the option of several actions...
 * __Find new Articles__
- * Click the link at the top of the page to generate articles _(NOTE: This feature unfortunately does require a refresh of the page)_
+ * Click the link at the top of the page to generate articles _(this feature currently requires a refresh of the page)_
 * __Save an Article__
  * Users can save an article to view it at a later time.
 * __Delete all unsaved Articles__
